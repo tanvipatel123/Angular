@@ -1,4 +1,4 @@
-# 01Basic
+RR# 01Basic
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.1.2.
 
@@ -295,3 +295,191 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 }forgot password
 --------------------------------------------------
+home........
+package com.example.mca_application
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.view.LayoutInflater
+import com.example.mca_application.databinding.ActivityHomeBinding
+
+class homeActivity : AppCompatActivity() {
+
+    private lateinit var binding:ActivityHomeBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = ActivityHomeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        binding.txtEmail.text=intent.getStringExtra("EMAIL")
+        binding.txtPass.text=intent.getStringExtra("PASS")
+
+    }
+}home acitivty
+--------------------------------------------------
+register......
+package com.example.mca_application
+
+import android.content.Intent
+import android.graphics.Bitmap
+import android.os.Bundle
+import android.provider.MediaStore
+import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+import com.example.mca_application.databinding.ActivityRegisterBinding
+
+class RegisterActivity : AppCompatActivity() {
+    private lateinit var rBinding: ActivityRegisterBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+       // setContentView(R.layout.activity_register)
+
+        rBinding=ActivityRegisterBinding.inflate(layoutInflater)
+        setContentView(rBinding.root)
+
+        rBinding.btnSubmit.isEnabled=false
+
+        rBinding.chkTermsCondition.setOnCheckedChangeListener{_, isChecked ->
+            if (isChecked==true)
+            {
+                rBinding.btnSubmit.isEnabled=true
+            }
+            else
+            {
+                rBinding.btnSubmit.isEnabled=false
+            }
+        }
+
+        rBinding.imgProfile.setOnClickListener{
+            var intent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent,123)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode==123)
+        {
+            rBinding.imgProfile.setImageBitmap(data!!.extras!!.get("data")as Bitmap)
+        }
+    }
+} register
+-------------------------------------------------
+song.....
+package com.example.mca_application
+
+import android.media.MediaPlayer
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.example.mca_application.databinding.ActivitySongBinding
+
+class SongActivity : AppCompatActivity() {
+    private lateinit var mBinding : ActivitySongBinding
+    private var isPlay: Boolean = false
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        mBinding=ActivitySongBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
+
+        var mPlayer= MediaPlayer.create(applicationContext ,R.raw.song)
+
+        mPlayer.isLooping=true
+
+        mBinding.txtTime.text=mPlayer.duration.toString()
+
+        mBinding.btnpause.setOnClickListener{
+            if (isPlay==true)
+            {
+                mPlayer.pause()
+                mBinding.btnpause.text="Play"
+                isPlay=false
+
+            }
+            else
+            {
+                mPlayer.start()
+                isPlay=true
+                mBinding.btnpause.text="Pause"
+            }
+        }
+        mBinding.btnstop.setOnClickListener{
+            mPlayer.stop()
+            mPlayer.prepare()
+        }
+
+
+    }} song
+------------------------------------------------
+splash screen ......
+package com.example.mca_application
+
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.os.Handler
+
+class SplashActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_splash)
+
+        Handler().postDelayed(Runnable {
+            startActivity(Intent(this@SplashActivity,LoginActivity::class.java))
+            finish()
+        },3000)
+
+
+    }
+} splash screen
+-----------------------------------------------
+call list .....
+package com.example.mca_application
+
+import android.database.Cursor
+import android.os.Bundle
+import android.provider.ContactsContract
+import android.telecom.Call
+import android.widget.SimpleAdapter
+import android.widget.SimpleCursorAdapter
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.mca_application.databinding.ActivityCallListBinding
+import com.example.mca_application.databinding.ActivityForgotPasswordBinding
+
+class CallListActivity : AppCompatActivity() {
+
+    private lateinit var cBinding : ActivityCallListBinding
+    var isplay = false
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        cBinding = ActivityCallListBinding.inflate(layoutInflater)
+        setContentView(cBinding.root)
+
+        readCallList()
+
+        }
+    private fun readCallList() {
+        var cursor : Cursor = contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            null,null,null,null
+        )!!
+
+        var  from = arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+
+        var  ContectNo = intArrayOf(android.R.id.text1)
+
+        var simpleAdapter:SimpleCursorAdapter =
+            SimpleCursorAdapter(this,android.R.layout.simple_list_item_1,cursor,from,ContectNo)
+
+        cBinding.scontact.adapter = simpleAdapter
+    }
+    }
+callllist
+--------------------------------------
